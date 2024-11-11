@@ -1,11 +1,24 @@
-import './index.css'; // import css
+import React, { useState } from 'react';
 
-import * as React from "react";
-import { createRoot } from "react-dom/client";
+const App = () => {
+    const [cloneStatus, setCloneStatus] = useState<string>("");
 
-const root = createRoot(document.getElementById('root') as HTMLElement);
-root.render(
-  <React.StrictMode>
-    <h1>Hello react</h1>
-  </React.StrictMode>
-);
+    const handleCloneClick = async () => {
+        const repoUrl = "https://github.com/ThomNardou/greenteam.git";
+        setCloneStatus("Clonage en cours...");
+        const res = await window.electron.ipcRenderer.invoke('clone-repo', repoUrl);
+        // const res = await window.Electron?.ipcRenderer.invoke('clone-repo', repoUrl);
+        setCloneStatus(res);
+    };
+
+    return (
+        <div>
+            <h1>Hello, Electron!</h1>
+            <p>I hope you enjoy using basic-electron-react-boilerplate. Test</p>
+            <button onClick={handleCloneClick}>Cloner le dépôt</button>
+            <p>{cloneStatus}</p>
+        </div>
+    );
+};
+
+export default App;
