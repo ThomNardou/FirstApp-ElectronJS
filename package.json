@@ -44,6 +44,10 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@fontsource/inter": "^5.1.0",
+    "@mui/joy": "^5.0.0-beta.48",
     "child_process": "^1.0.2",
     "dotenv": "^16.4.5",
     "electron-squirrel-startup": "^1.0.1",

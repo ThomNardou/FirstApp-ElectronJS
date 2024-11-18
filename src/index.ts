@@ -1,7 +1,10 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
-import git from "isomorphic-git";
+import git, { clone } from "isomorphic-git";
 import dotenv from "dotenv";
+
+import cloneRepos from "./services/cloneRepos";
+import statusAddCommitPush from "./services/statusAddCommitPush";
 
 dotenv.config();
 
@@ -60,23 +63,7 @@ app.on("activate", () => {
 // code. You can also put them in separate files and import them here.
 
 ipcMain.handle("clone-repo", async (_, repoUrl: string) => {
-  const repoName = repoUrl.split("/").pop()?.replace(".git", "");
-  const localPath = `C:/Users/${
-    require("os").userInfo().username
-  }/Documents/${repoName}`;
-  try {
-    await git.clone({
-      fs: require("fs"),
-      http: require("isomorphic-git/http/node"),
-      dir: localPath,
-      url: repoUrl,
-      singleBranch: true,
-      depth: 1,
-    });
-    return `Clonage réussi dans ${localPath}`;
-  } catch (error) {
-    return `Erreur lors du clonage : ${error}`;
-  }
+  return cloneRepos(repoUrl);
 });
 
 ipcMain.handle(
@@ -98,11 +85,14 @@ ipcMain.handle(
         dir: repoPath,
         remote: "origin",
         ref: "main",
-        onAuth: () => ({ username: process.env.USERNAME as string, password: process.env.PASSWORD as string }),
+        onAuth: () => ({
+          username: process.env.TOKEN as string,
+        }),
       });
 
       return "Push réussi";
     } catch (error) {
+      console.error(error);
       return `Erreur lors du push : ${error}`;
     }
   }
