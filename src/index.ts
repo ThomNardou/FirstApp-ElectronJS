@@ -69,31 +69,6 @@ ipcMain.handle("clone-repo", async (_, repoUrl: string) => {
 ipcMain.handle(
   "status-add-commit-push",
   async (_, repoPath: string, message: string) => {
-    try {
-      await git.add({ fs: require("fs"), dir: repoPath, filepath: "." });
-
-      await git.commit({
-        fs: require("fs"),
-        dir: repoPath,
-        message,
-        author: { name: "Thomas Nardou", email: "" },
-      });
-
-      await git.push({
-        fs: require("fs"),
-        http: require("isomorphic-git/http/node"),
-        dir: repoPath,
-        remote: "origin",
-        ref: "main",
-        onAuth: () => ({
-          username: process.env.TOKEN as string,
-        }),
-      });
-
-      return "Push réussi";
-    } catch (error) {
-      console.error(error);
-      return `Erreur lors du push : ${error}`;
-    }
+    return statusAddCommitPush(repoPath, message);
   }
 );

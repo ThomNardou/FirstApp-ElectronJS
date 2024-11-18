@@ -15,7 +15,7 @@ const App = () => {
 
   const handlePushClick = async () => {
     const repoPath = `C:/Users/pk88yte/Documents/greenteam`;
-    const message = "Test commit";
+    const message = "Delete all test files";
     const res = await window.electron.ipcRenderer.invoke(
       "status-add-commit-push",
       repoPath,
