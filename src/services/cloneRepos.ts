@@ -12,9 +12,9 @@ const cloneRepos = async (repoUrl: string): Promise<string> => {
             singleBranch: true,
             depth: 1,
         });
-        return `Clonage réussi dans ${localPath}`;
+        return "success";
     } catch (error) {
-        return `Erreur lors du clonage : ${error}`;
+        return "error";
     }
 };
 

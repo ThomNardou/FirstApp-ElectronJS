@@ -8,8 +8,25 @@ const statusAddCommitPush = async (
   message: string
 ): Promise<string> => {
   try {
+    const status = await git.statusMatrix({
+      fs: require("fs"),
+      dir: repoPath,
+    });
+
+    if (status.length === 0) return 'empty';
+
+    for( const [filepath, head, index, workdir] of status) {
+      if (index === 0 && workdir === 1) {
+        await git.remove({ fs: require("fs"), dir: repoPath, filepath });
+      }
+    }
+
+    console.log(status);
+
+    // Ajouter toutes les modifications à l'index
     await git.add({ fs: require("fs"), dir: repoPath, filepath: "." });
 
+    // Commit des changements
     await git.commit({
       fs: require("fs"),
       dir: repoPath,
@@ -17,6 +34,7 @@ const statusAddCommitPush = async (
       author: { name: "Thomas Nardou", email: "" },
     });
 
+    // Push vers le dépôt distant
     await git.push({
       fs: require("fs"),
       http: require("isomorphic-git/http/node"),
@@ -28,10 +46,10 @@ const statusAddCommitPush = async (
       }),
     });
 
-    return "Push réussi";
+    return "success";
   } catch (error) {
     console.error(error);
-    return `Erreur lors du push : ${error}`;
+    return "error";
   }
 };
 
