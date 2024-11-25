@@ -17,50 +17,60 @@ const App = () => {
 
     setTimeout(() => {
       setCloneStatus("");
-    }, 3000)
+    }, 3000);
   };
 
   const handlePushClick = async () => {
     const repoPath = `C:/Users/pk88yte/Documents/greenteam`;
-    const message = "Delete all test files";
     setPushStatus("loading");
     const res = await window.electron.ipcRenderer.invoke(
       "status-add-commit-push",
       repoPath,
-      message
+      commitName
     );
     setPushStatus(res);
 
     setTimeout(() => {
       setPushStatus("");
-    }, 3000)
+    }, 3000);
   };
 
   const renderAlert = (status: string) => {
     if (status === "empty") {
       return <Alert severity="info">No Changes</Alert>;
-    }
-    else if (status === "success") {
+    } else if (status === "success") {
       return <Alert severity="success">Opération réussie</Alert>;
-    }
-    else if (status === "error") {
+    } else if (status === "error") {
       return <Alert severity="error">Opération échouée</Alert>;
-    }
-    else if (status === "loading") {
+    } else if (status === "loading") {
       return <Alert severity="warning">Loading...</Alert>;
-    }
-    else {
+    } else {
       return null;
     }
-  }
+  };
 
   return (
     <div>
       <h1>Welcome to Github Desktop</h1>
-      <p>Current message : {commitName}</p>
-      <TextField id="standard-basic" label="Commit Message" variant="standard" onChange={(e) => setCommitName(e.target.value)} />
-      <Button color="primary" onClick={handleCloneClick}>Cloner le repos</Button>
-      <Button color="primary" onClick={handlePushClick}>Push le repos</Button>
+      <TextField
+        id="standard-basic"
+        label="Commit Message"
+        variant="standard"
+        onChange={(e) => setCommitName(e.target.value)}
+        sx={{
+          "& label": { color: "#777" },
+          "& .MuiInput-underline:before": { borderBottomColor: "#777" },
+          "& input": { color: "#fff" },
+        }}
+      />
+      <div className="buttonActions">
+        <Button className="action" color="primary" onClick={handleCloneClick} sx={{ mr: "1rem" }}>
+          Cloner le repos
+        </Button>
+        <Button className="action" color="primary" onClick={handlePushClick}>
+          Push le repos
+        </Button>
+      </div>
       {renderAlert(cloneStatus)}
       {renderAlert(pushStatus)}
     </div>
